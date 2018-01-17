@@ -1,62 +1,59 @@
-import React from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, FlatList, StatusBar } from 'react-native';
-import { StackNavigator } from 'react-navigation';
-const Quiz = ({ navigation }) => (
-  <View>
-    <Text>This is the Quiz view</Text>
-  </View>
-);
-const list = Array.apply(null, Array(50)).map(function (x, i) { return {key: i}; })
+import { AppLoading, Font } from "expo";
+import React, {Component} from 'react';
+import { Root } from 'native-base';
+import { setLocalNotification } from './utils/notifications';
+import { getQuizzes, setQuizzes} from './utils/storage';
+import Stack from './components/screens/stack';
 
-const Home = ({ navigation }) => (
-  <View style={styles.container}>
-    <FlatList
-      data={list}
-      renderItem={({item}) =>
-      <TouchableOpacity onPress={() => navigation.navigate('Quiz')}>
-        <Text style={styles.item}>{item.key}</Text>
-      </TouchableOpacity>
+export default class App extends Component {
+  state = {
+    isReady: false,
+    quizzes: []
+  }
+  componentWillMount() {
+    this.loadFonts();
+    setLocalNotification();
+    getQuizzes().then(quizzes => {
+      this.setState({quizzes})
+    })
+  }
+  async loadFonts() {
+    await Font.loadAsync({
+      Roboto: require("native-base/Fonts/Roboto.ttf"),
+      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
+      Ionicons: require("@expo/vector-icons/fonts/Ionicons.ttf")
+    });
+    this.setState({
+      isReady: true
+    });
+  }
+  addQuiz = (quiz) => {
+    const quizzes = [...this.state.quizzes, quiz]
+    this.setState({
+      ...this.state,
+      quizzes
+    })
+    setQuizzes(quizzes)
+  }
+  addQuestion = (quizID, question) => {
+    const quizzes = [...this.state.quizzes]
+    const index = quizzes.findIndex(q => q.key === quizID)
+    if(index !== -1){
+      quizzes[index].questions.push(question)
+      this.setState({
+        ...this.state,
+        quizzes
+      })
+      setQuizzes(quizzes)
     }
-    />
-  </View>
-);
-const log = function () {
-  console.log('new quiz')
-}
-const Stack = StackNavigator({
-  Home: {
-    screen: Home,
-    navigationOptions: ({navigation}) => ({
-      title: 'Quizzes',
-      headerRight: <Button color={'green'} title={'New Quiz'} onPress={log}/>,
-    }),
-  },
-  Quiz: {
-    screen: Quiz
   }
-})
-
-export default class App extends React.Component {
   render() {
-    return (
-      <Stack />
-
-    );
+    const { quizzes, isReady } = this.state
+    if (!isReady) {
+      return <AppLoading />;
+    }
+    return (<Root>
+      <Stack screenProps={{quizzes, addQuiz: this.addQuiz, addQuestion: this.addQuestion}} />
+    </Root>)
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'stretch',
-    justifyContent: 'center',
-  },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
-    borderBottomColor: 'black',
-    borderBottomWidth: 1
-  },
-});
