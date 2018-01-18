@@ -13,10 +13,12 @@ export default class App extends Component {
   componentWillMount() {
     this.loadFonts();
     setLocalNotification();
-    getQuizzes().then(quizzes => {
+    getQuizzes()
+    .then(quizzes => {
       this.setState({quizzes})
     })
   }
+
   async loadFonts() {
     await Font.loadAsync({
       Roboto: require("native-base/Fonts/Roboto.ttf"),
@@ -39,7 +41,7 @@ export default class App extends Component {
     const quizzes = [...this.state.quizzes]
     const index = quizzes.findIndex(q => q.key === quizID)
     if(index !== -1){
-      quizzes[index].questions.push(question)
+      quizzes[index].questions = [...quizzes[index].questions, question]
       this.setState({
         ...this.state,
         quizzes

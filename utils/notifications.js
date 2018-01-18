@@ -37,8 +37,8 @@ export const setLocalNotification = () =>  {
 
 export const createNotification = () =>  {
   return {
-    title: "Do you FlashCards!",
-    body: 'Dont forget to do you FlashCards today!',
+    title: "Do your FlashCards!",
+    body: "Don't forget to do your FlashCards today!",
     ios: {sound: true},
     android: {sound: true, vibrate: true, priority: 'high', sticky: false}
   }

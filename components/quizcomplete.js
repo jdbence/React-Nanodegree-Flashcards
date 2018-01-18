@@ -1,9 +1,14 @@
 import React, {Component} from 'react';
-import { H1, Text, View } from 'native-base';
+import { Container, View,Text } from 'native-base';
+import QuizCard from './quizcard';
 
-export default QuizComplete = item => (
-    <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-      <H1>Quiz Complete!</H1>
-      {item.done && <Text>{`${item.totalCorrect} Correct`}</Text>}
-    </View>
-);
+export default QuizComplete = item => {
+  const {correct, text, total, done} = item
+  return (
+    <Container>
+      <View>
+        <QuizCard text={text} subtext={done ? `${correct} out of ${total} Correct` : ' '}/>
+      </View>
+    </Container>
+  );
+}

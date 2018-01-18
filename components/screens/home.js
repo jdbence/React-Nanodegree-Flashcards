@@ -1,25 +1,36 @@
 import React, {Component} from 'react';
-import { List, ListItem, Body, Text, View } from 'native-base';
+import { ListItem, Body, Text, View } from 'native-base';
+import { StyleSheet, FlatList } from 'react-native';
 
 export default Home = ({ navigation, screenProps }) => (
-  <View style={{
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'stretch',
-    justifyContent: 'center',
-  }}>
+  <View style={styles.view}>
     {screenProps.quizzes.length > 0 &&
-    <List
-      dataArray={screenProps.quizzes}
-      renderRow={item =>
-        <ListItem onPress={() => navigation.navigate('QuizHome', item)}>
-          <Body>
-            <Text >{item.key}</Text>
-            <Text note>{item.questions.length} cards</Text>
-          </Body>
-        </ListItem>
-      }
+    <FlatList
+      data={screenProps.quizzes}
+      renderItem={({item}) => {
+        const { key, title, questions: { length }} = item;
+        return (
+          <ListItem style={styles.item} onPress={() => navigation.navigate('QuizHome', item)}>
+            <Body>
+              <Text>{title}</Text>
+              <Text note>{length} cards</Text>
+            </Body>
+          </ListItem>
+        )
+      }}
     />
     }
   </View>
 );
+
+const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'stretch',
+    justifyContent: 'center',
+  },
+  item:  {
+    marginLeft: 0
+  }
+})

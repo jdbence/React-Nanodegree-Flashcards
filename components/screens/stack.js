@@ -20,7 +20,7 @@ export default Stack = StackNavigator({
   QuizHome: {
     screen: QuizHome,
     navigationOptions: ({navigation}) => ({
-      title: `${trunc(navigation.state.params.key)}`,
+      title: `${trunc(navigation.state.params.title)}`,
       headerRight: <Button bordered onPress={() => navigation.navigate('QuizAddCard', navigation.state.params)}><Text primary>Add Card</Text></Button>,
       headerStyle: {paddingRight: 5}
     }),
@@ -34,7 +34,7 @@ export default Stack = StackNavigator({
   Quiz: {
     screen: Quiz,
     navigationOptions: ({navigation}) => ({
-      title: `${trunc(navigation.state.params.key)}`
+      title: `${trunc(navigation.state.params.title)}`
     }),
   },
   NewQuiz:  {
